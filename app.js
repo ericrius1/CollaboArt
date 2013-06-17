@@ -3,11 +3,12 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 
+server.listen(8080);
+console.log("listening on 8080")
+
 app.use(express.static(__dirname + '/public'));
 app.use(express.logger());
 
-console.log('listen on port 3000');
-app.listen(3000);
 
 
 io.sockets.on('connection', function (socket) {
