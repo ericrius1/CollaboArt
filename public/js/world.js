@@ -60,12 +60,22 @@ var World = function() {
     //
 
     window.addEventListener('resize', onWindowResize, false);
-    $(container).mousehold(move);
+    //$(container).mousehold(move);
+    $(container).on('mousedown', move);
 
   }
 
-  function move() {
-    light1.position.z +=10;
+  function move(event) {
+    var vector = new THREE.Vector3(
+    (event.clientX / window.innerWidth) * 2 - 1, -(event.clientY / window.innerHeight) * 2 + 1,
+      0.5);
+    projector.unprojectVector(vector, camera);
+    var dir = vector.sub(camera.position).normalize();
+    var ray = new THREE.Raycaster(camera.position, dir);
+    var distance = -camera.position.z / dir.z;
+    var pos = camera.position.clone().add(dir.multiplyScalar(distance));
+    console.log(pos);
+    light1.position.copy(pos);
   }
 
   function onWindowResize() {
@@ -94,7 +104,7 @@ var World = function() {
   }
 
   function render() {
-    
+
 
     renderer.render(scene, camera);
 
