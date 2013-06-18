@@ -1,7 +1,7 @@
 var World = function() {
 
 
-  var camera, scene, renderer, controls,
+  var camera, scene, renderer, controls, projector,
     particle1, light1;
 
   var FAR = 300;
@@ -20,6 +20,7 @@ var World = function() {
     camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, FAR);
     camera.position.set(0, 15, 150);
     camera.lookAt(new THREE.Vector3());
+    projector = new THREE.Projector();
 
     // SCENE
 
@@ -104,11 +105,13 @@ var World = function() {
 
     scene.add(new THREE.AmbientLight(0x111111));
 
-    var intensity = 2.5;
+    var intensity = 11;
     var distance = 200;
     var c1 = 0xff11ff;
 
     light1 = new THREE.PointLight(c1, intensity, distance);
+    light1.position.z = 11;
+    console.log(light1.position.z);
     scene.add(light1);
 
 
