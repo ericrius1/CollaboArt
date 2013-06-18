@@ -3,6 +3,8 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 
+io.set('log level', 1);
+
 server.listen(8080);
 console.log("listening on 8080")
 
@@ -18,6 +20,8 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('clicked', function(position){
-    console.log(position.x);
-  })
+    console.log(position)
+    socket.emit('update', position);
+  });
+
 });
