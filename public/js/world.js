@@ -1,4 +1,5 @@
 var world = function(p5) {
+  var comm = new Comm();
   var x, y;
   var vx, vy;
   p5.setup = function() {
@@ -12,10 +13,8 @@ var world = function(p5) {
     p5.ellipse(x, y, 10, 10)
   }
 
-  p5.resetParticle = function(event) {
-    x = event.clientX;
-    y = event.clientY;
-    
+  p5.moveParticle = function(event) {
+    comm.clicked(event);
   }
 }
 
@@ -24,6 +23,6 @@ $(document).ready(function() {
   canvas = document.getElementById('processing');
   processing = new Processing(canvas, world);
   $('#processing').on('mousedown', function(event) {
-    processing.resetParticle(event);
+    processing.moveParticle(event);
   })
 });

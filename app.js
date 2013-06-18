@@ -7,7 +7,7 @@ server.listen(8080);
 console.log("listening on 8080")
 
 app.use(express.static(__dirname + '/public'));
-app.use(express.logger());
+//app.use(express.logger());
 
 
 
@@ -16,4 +16,8 @@ io.sockets.on('connection', function (socket) {
   socket.on('my other event', function (data) {
     console.log(data);
   });
+
+  socket.on('clicked', function(position){
+    console.log(position.x);
+  })
 });

@@ -1,5 +1,10 @@
- var socket = io.connect();
-  socket.on('news', function (data) {
-    console.log(data);
-    socket.emit('my other event', { my: 'data' });
+ var Comm = function() {
+   this.socket = io.connect();
+ }
+
+ Comm.prototype.clicked = function(event){
+  this.socket.emit('clicked', {
+    x: event.clientX,
+    y: event.clientY
   });
+ }
