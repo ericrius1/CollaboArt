@@ -6,11 +6,12 @@ var world = function(processing) {
   p.setup = function() {
     p.size(window.innerWidth, window.innerHeight, p.P3D);
     ps = new ParticleSystem();
+    ps.init();
   }
 
   p.draw = function() {
     p.background(0)
-    ps.draw();
+    ps.run();
     
   }
 
