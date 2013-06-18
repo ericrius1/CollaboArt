@@ -5,8 +5,7 @@
 
 Comm.prototype.listen = function(){
   this.socket.on('update', function(position){
-    console.log('getting update')
-    p5.update(position);
+    processing.update(position);
   })
 }
 

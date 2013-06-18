@@ -1,34 +1,33 @@
-var world = function(p5) {
+var world = function(processing) {
+  p = processing;
+  var ps;
   var comm = new Comm();
   comm.listen();
-  var x, y;
-  var vx, vy;
-  p5.setup = function() {
-    p5.size(window.innerWidth, window.innerHeight, p5.P3D);
-    x = 300;
-    y = 300;
+  p.setup = function() {
+    p.size(window.innerWidth, window.innerHeight, p.P3D);
+    ps = new ParticleSystem();
   }
 
-  p5.draw = function() {
-    p5.background(0)
-    p5.ellipse(x, y, 10, 10)
+  p.draw = function() {
+    p.background(0)
+    ps.draw();
+    
   }
 
-  p5.moveParticle = function(event) {
+  p.moveParticle = function(event) {
     comm.clicked(event);
   }
 
-  p5.update = function(position){
-    x = position.x;
-    y = position.y;
+  p.update = function(position){
+    
   }
 }
 
 
 $(document).ready(function() {
   canvas = document.getElementById('processing');
-  p5 = new Processing(canvas, world);
+  processing = new Processing(canvas, world);
   $('#processing').on('mousedown', function(event) {
-    p5.moveParticle(event);
+    processing.moveParticle(event);
   })
 });
