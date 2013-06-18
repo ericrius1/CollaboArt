@@ -105,7 +105,7 @@ var World = function() {
 
     scene.add(new THREE.AmbientLight(0x111111));
 
-    var intensity = 11;
+    var intensity = 0;
     var distance = 200;
     var c1 = 0xff11ff;
 
@@ -177,12 +177,9 @@ var World = function() {
   }
 
   function render() {
-
-    var time = Date.now() * 0.00025;
-    var z = 20,
-      d = 150;
     controls.update( clock.getDelta() );
     renderer.render(scene, camera);
+    light1.intensity +=.01;
 
   }
 
