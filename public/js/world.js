@@ -10,8 +10,6 @@ var World = function() {
 
   var comm = new Comm();
 
-
-
   function init() {
 
     comm.listen();
@@ -160,8 +158,8 @@ var World = function() {
   }
 
   this.move_light = move_light;
-  this.init = init();
-  this.animate = animate();
+  this.init = init;
+  this.animate = animate;
   this.scene = scene;
   return this;
 
