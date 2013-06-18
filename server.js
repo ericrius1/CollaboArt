@@ -22,6 +22,7 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('update_light', function(light){
     lights[light.id] = light;
+    io.sockets.emit('update_light', lights[light.id]);
   });
 
   io.sockets.emit('activate_light', id);

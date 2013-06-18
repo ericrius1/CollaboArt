@@ -16,12 +16,6 @@ Comm.prototype.listen = function(){
   })
 }
 
- Comm.prototype.clicked = function(event){
-  this.socket.emit('clicked', {
-    x: event.clientX,
-    y: event.clientY
-  });
- }
 
 Comm.prototype.update_light = function(light){
   this.socket.emit('update_light', light);

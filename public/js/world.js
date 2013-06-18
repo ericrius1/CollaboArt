@@ -43,7 +43,6 @@ var World = function() {
 
     controls.keys = [65, 83, 68];
 
-
     // TEXTURES
 
     var texture = THREE.ImageUtils.loadTexture("../textures/disturb.jpg");
@@ -107,12 +106,13 @@ var World = function() {
 
     window.addEventListener('resize', onWindowResize, false);
     $(container).on('mousedown', function(event) {
-      //comm.clicked(event);
+      move_light(event);
     });
 
   }
 
-  function move_light(position) {
+  function move_light(event) {
+    var position= {x: event.clientX, y : event.clientY };
     var vector = new THREE.Vector3(
     (position.x / window.innerWidth) * 2 - 1, -(position.y / window.innerHeight) * 2 + 1,
       0.5);
@@ -121,7 +121,8 @@ var World = function() {
     var ray = new THREE.Raycaster(camera.position, dir);
     var distance = -camera.position.z / dir.z;
     var pos = camera.position.clone().add(dir.multiplyScalar(distance));
-    scene_lights[lightId].position.x = pos.x;
+    wire_lights[lightId].position.x = pos.x;
+    send_update_light(lightId);
   }
 
   function onWindowResize() {
@@ -138,7 +139,7 @@ var World = function() {
   }
 
   function render() {
-    controls.update(clock.getDelta());
+    //controls.update(clock.getDelta());
     renderer.render(scene, camera);
   }
 
@@ -157,32 +158,33 @@ var World = function() {
     lightId = lightId || id;
     wire_lights[id].intensity = 10;
     wire_lights[id].position.x = -10 * Math.random() * 10;
+    scene_lights[id].intensity = wire_lights[id].intensity;
+    scene_lights[id].position.x = wire_lights[id].position.x;
     send_update_light(id);
 
   }
 
-
   function send_update_light(id) {
-    scene_lights[id].intensity = wire_lights[id].intensity;
-    scene_lights[id].position.x = wire_lights[id].position.x;
     comm.update_light(wire_lights[id]);
   }
 
   function recieve_update_light(light) {
     wire_lights[light.id] = light;
     scene_lights[light.id].intensity = light.intensity;
+    scene_lights[light.id].position.copy(light.position);
   }
 
+  //Happens when client connects
   function recieve_update_lights(lights) {
     for (var id in lights) {
       if (lights.hasOwnProperty(id)) {
         var light = lights[id];
         wire_lights[id] = light;
         scene_lights[id].intensity = light.intensity;
+        scene_lights[id].color = light.color;
       }
     }
   }
-
 
   this.move_light = move_light;
   this.activate_light = activate_light;
