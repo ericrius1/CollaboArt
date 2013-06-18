@@ -1,5 +1,5 @@
 var world = function(p5) {
-  var comm = new Comm(this);
+  var comm = new Comm();
   comm.listen();
   var x, y;
   var vx, vy;
@@ -27,8 +27,8 @@ var world = function(p5) {
 
 $(document).ready(function() {
   canvas = document.getElementById('processing');
-  processing = new Processing(canvas, world);
+  p5 = new Processing(canvas, world);
   $('#processing').on('mousedown', function(event) {
-    processing.moveParticle(event);
+    p5.moveParticle(event);
   })
 });
