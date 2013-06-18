@@ -1,5 +1,5 @@
 var world = function(p5) {
-  var comm = new Comm();
+  var comm = new Comm(this);
   comm.listen();
   var x, y;
   var vx, vy;
@@ -16,6 +16,11 @@ var world = function(p5) {
 
   p5.moveParticle = function(event) {
     comm.clicked(event);
+  }
+
+  p5.update = function(position){
+    x = position.x;
+    y = position.y;
   }
 }
 

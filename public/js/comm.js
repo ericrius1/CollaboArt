@@ -1,10 +1,12 @@
  var Comm = function() {
+   this.world = world;
    this.socket = io.connect();
  }
 
 Comm.prototype.listen = function(){
-  this.socket.on('update', function(data){
-    console.log("shnur");
+  this.socket.on('update', function(position){
+    console.log('getting update')
+    processing.update(position);
   })
 }
 
