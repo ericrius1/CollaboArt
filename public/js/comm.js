@@ -6,6 +6,14 @@ Comm.prototype.listen = function(){
   this.socket.on('activate_light', function(id){
     world.activate_light(id);
   });
+
+  this.socket.on('update_light', function(light){
+    world.recieve_update_light(light);
+  });
+
+  this.socket.on('update_lights', function(lights){
+    world.recieve_update_lights(lights);
+  })
 }
 
  Comm.prototype.clicked = function(event){

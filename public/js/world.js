@@ -153,24 +153,42 @@ var World = function() {
     }
   }
 
-  function activate_light(id){
+  function activate_light(id) {
     lightId = lightId || id;
-    wire_lights[id].intensity +=10;
+    wire_lights[id].intensity = 10;
     wire_lights[id].position.x = -10 * Math.random() * 10;
-    update_light(id);
-    
+    send_update_light(id);
+
   }
 
 
-  function update_light(id){
+  function send_update_light(id) {
     scene_lights[id].intensity = wire_lights[id].intensity;
     scene_lights[id].position.x = wire_lights[id].position.x;
     comm.update_light(wire_lights[id]);
   }
 
+  function recieve_update_light(light) {
+    wire_lights[light.id] = light;
+    scene_lights[light.id].intensity = light.intensity;
+  }
+
+  function recieve_update_lights(lights) {
+    for (var id in lights) {
+      if (lights.hasOwnProperty(id)) {
+        var light = lights[id];
+        wire_lights[id] = light;
+        scene_lights[id].intensity = light.intensity;
+      }
+    }
+  }
+
+
   this.move_light = move_light;
   this.activate_light = activate_light;
-  this.update_light = update_light;
+  this.recieve_update_light = recieve_update_light;
+  this.recieve_update_lights = recieve_update_lights;
+  this.send_update_light = send_update_light;
   this.init = init;
   this.animate = animate;
   this.renderer = renderer;

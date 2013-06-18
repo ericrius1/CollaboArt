@@ -25,6 +25,7 @@ io.sockets.on('connection', function (socket) {
   });
 
   io.sockets.emit('activate_light', id);
+  io.sockets.emit('update_lights', lights);
   id++;
 
 });
