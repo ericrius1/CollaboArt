@@ -7,8 +7,9 @@ Comm.prototype.listen = function(){
     world.move_light(position);
   })
 
-  this.socket.on('initialize', function(lights){
-    world.add_lights(lights);
+  this.socket.on('turn_on', function(index){
+    debugger;
+    world.turn_on(index);
   });
 }
 
@@ -19,6 +20,3 @@ Comm.prototype.listen = function(){
   });
  }
 
- Comm.prototype.addLight = function(light){
-  this.socket.emit('add_light', light);
- }

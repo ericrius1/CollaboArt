@@ -5,25 +5,21 @@ var io = require('socket.io').listen(server);
 
 io.set('log level', 1);
 
-server.listen(8081);
+server.listen(8082);
 console.log("listening on 8081")
 
 app.use(express.static(__dirname + '/public'));
 //app.use(express.logger());
 
-var lights = [];
+var id = 0;
 
 io.sockets.on('connection', function (socket) {
-
-  io.sockets.emit('initialize', lights);
 
   socket.on('clicked', function(position){
     io.sockets.emit('update', position);
   });
 
-  socket.on('add_light', function(light){
-    lights.push(light);
-    console.log(lights);
-  })
+  io.sockets.emit('turn_on', id);
+  id++;
 
 });

@@ -9,7 +9,6 @@ var World = function() {
   var comm = new Comm();
 
   function init() {
-    World.id++;
     comm.listen();
 
     var container = document.getElementById('container');
@@ -145,21 +144,23 @@ var World = function() {
     for (var i = 0; i < numPlayers; i++) {
       scene.add(new THREE.AmbientLight(0x111111));
       var light = new Light();
-      comm.addLight(light);
       var test_light = new THREE.PointLight(light.color, light.intensity, light.distance);
       lights.push(test_light);
       test_light.position.x = -30 + Math.random() * 60;
       scene.add(lights[i]);
     }
+  }
 
+  function turn_on(index){
+    debugger;
+    lights[index].intensity +=10;
   }
 
   this.move_light = move_light;
-  this.add_lights = add_lights;
+  this.turn_on = turn_on;
   this.init = init;
   this.animate = animate;
   this.renderer = renderer;
-  this.add
   this.scene = scene;
   return this;
 }
