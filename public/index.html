@@ -7,6 +7,7 @@
   <script src="/socket.io/socket.io.js"></script>
   <script src="lib/TrackballControls.js"></script>
   <script src="lib/stats.min.js"></script>
+  <script src="js/light.js"></script>
   <script src="lib/utils.js"></script>
   <script src="js/comm.js"></script>
   <script src="js/world.js"></script>
@@ -32,5 +33,6 @@
 
 
 <script>
-  var world = new World();
+  world = new World();
+  world.init();
 </script>

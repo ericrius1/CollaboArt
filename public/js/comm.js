@@ -1,5 +1,4 @@
  var Comm = function() {
-   this.world = world;
    this.socket = io.connect();
  }
 

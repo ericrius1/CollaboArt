@@ -5,13 +5,12 @@ var World = function() {
     particle1, light1;
 
   var FAR = 300;
-  var light1_z = 11;
   var clock = new THREE.Clock();
+  var lights = [];
 
   var comm = new Comm();
 
-  init();
-  animate();
+
 
   function init() {
 
@@ -82,29 +81,6 @@ var World = function() {
     mesh.rotation.x = -Math.PI / 2;
     scene.add(mesh);
 
-    // OBJECTS
-
-    //var objectGeometry = new THREE.CubeGeometry( 0.5, 1, 1 );
-    var objectGeometry = new THREE.SphereGeometry(1.5, 16, 8);
-    //var objectGeometry = new THREE.TorusGeometry( 1.5, 0.4, 8, 16 );
-
-    for (var i = 0; i < 1000; i++) {
-
-      var mesh = new THREE.Mesh(objectGeometry, objectMaterial);
-
-      mesh.position.x = 400 * (0.5 - Math.random());
-      mesh.position.y = 50 * (0.5 - Math.random()) + 25;
-      mesh.position.z = 200 * (0.5 - Math.random());
-
-      mesh.rotation.y = 3.14 * (0.5 - Math.random());
-      mesh.rotation.x = 3.14 * (0.5 - Math.random());
-
-      mesh.matrixAutoUpdate = false;
-      mesh.updateMatrix();
-      scene.add(mesh);
-
-    }
-
     // LIGHTS
 
     scene.add(new THREE.AmbientLight(0x111111));
@@ -114,15 +90,9 @@ var World = function() {
     var c1 = 0xff00ff;
 
     light1 = new THREE.PointLight(c1, intensity, distance);
-    light1.position.z = light1_z;
-    console.log(light1.position.z);
+    lights.push(new Light());
     scene.add(light1);
 
-
-
-    var dlight = new THREE.DirectionalLight(0xffffff, 0.1);
-    dlight.position.set(0.5, -1, 0).normalize();
-    scene.add(dlight);
 
     var sphere = new THREE.SphereGeometry(0.25, 16, 8);
 
@@ -131,7 +101,6 @@ var World = function() {
     }));
     l1.position = light1.position;
     scene.add(l1);
-
 
     // RENDERER
 
@@ -151,8 +120,6 @@ var World = function() {
 
     stats = new Stats();
     container.appendChild(stats.domElement);
-
-    //
 
     window.addEventListener('resize', onWindowResize, false);
     $(container).on('mousedown', function(event){
@@ -180,24 +147,22 @@ var World = function() {
     controls.handleResize();
   }
 
-
   function animate() {
-
     requestAnimationFrame(animate);
-
     render();
     stats.update();
-
   }
 
   function render() {
     //controls.update(clock.getDelta());
     renderer.render(scene, camera);
     light1.intensity += .01;
-
   }
 
   this.move_light = move_light;
+  this.init = init();
+  this.animate = animate();
+  this.scene = scene;
   return this;
 
 }
