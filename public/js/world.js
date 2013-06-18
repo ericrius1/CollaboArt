@@ -82,10 +82,8 @@ var World = function() {
 
     scene.add(new THREE.AmbientLight(0x111111));
     var light = new Light();
-    debugger;
-    var light1 = new THREE.PointLight(light.color, light.intensity, light.distance);
     comm.addLight(light);
-    lights.push(light1);
+    lights.push(new THREE.PointLight(light.color, light.intensity, light.distance));
     scene.add(lights[0]);
 
 
@@ -112,7 +110,7 @@ var World = function() {
     container.appendChild(stats.domElement);
 
     window.addEventListener('resize', onWindowResize, false);
-    $(container).on('mousedown', function(event){
+    $(container).on('mousedown', function(event) {
       comm.clicked(event);
     });
 
@@ -148,10 +146,22 @@ var World = function() {
     renderer.render(scene, camera);
   }
 
+  function add_lights(lights) {
+    debugger;
+    var light = new Light();
+    comm.addLight(light);
+    lights.push(new THREE.PointLight(light.color, light.intensity, light.distance));
+    scene.add(lights[0]);
+
+
+
+  }
+
   this.move_light = move_light;
+  this.add_lights = add_lights;
   this.init = init;
   this.animate = animate;
+  this.add
   this.scene = scene;
   return this;
-
 }

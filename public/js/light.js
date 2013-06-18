@@ -1,5 +1,9 @@
 var Light = function() {
   this.intensity = 11;
   this.distance = 200;
-  this.color = 0xff00ff;
+  this.color = new THREE.Color();
+  var r = Math.random();
+  var g = Math.random();
+  var b = Math.random();
+  this.color.setRGB(r, g, b);
 }

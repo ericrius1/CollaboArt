@@ -15,12 +15,15 @@ var lights = [];
 
 io.sockets.on('connection', function (socket) {
 
+  io.sockets.emit('initialize', lights);
+
   socket.on('clicked', function(position){
     io.sockets.emit('update', position);
   });
 
   socket.on('add_light', function(light){
-    debugger;
+    lights.push(light);
+    console.log(lights);
   })
 
 });
