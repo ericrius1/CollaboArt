@@ -163,11 +163,9 @@ var World = function() {
 
 
   function update_light(id){
-    debugger;
     scene_lights[id].intensity = wire_lights[id].intensity;
     scene_lights[id].position.x = wire_lights[id].position.x;
-    socket.emit('update_light', wire_lights[id]);
-
+    comm.update_light(wire_lights[id]);
   }
 
   this.move_light = move_light;

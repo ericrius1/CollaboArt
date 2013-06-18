@@ -15,3 +15,6 @@ Comm.prototype.listen = function(){
   });
  }
 
+Comm.prototype.update_light = function(light){
+  this.socket.emit('update_light', light);
+}
