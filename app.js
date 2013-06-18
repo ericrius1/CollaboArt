@@ -5,8 +5,8 @@ var io = require('socket.io').listen(server);
 
 io.set('log level', 1);
 
-server.listen(8080);
-console.log("listening on 8080")
+server.listen(8081);
+console.log("listening on 8081")
 
 app.use(express.static(__dirname + '/public'));
 //app.use(express.logger());

@@ -1,5 +1,6 @@
 var world = function(p5) {
   var comm = new Comm();
+  comm.listen();
   var x, y;
   var vx, vy;
   p5.setup = function() {
