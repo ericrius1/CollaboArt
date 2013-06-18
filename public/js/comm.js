@@ -5,7 +5,7 @@
 
 Comm.prototype.listen = function(){
   this.socket.on('update', function(position){
-    processing.update(position);
+    world.move_light(position);
   })
 }
 

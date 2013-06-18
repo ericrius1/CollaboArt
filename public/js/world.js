@@ -5,13 +5,17 @@ var World = function() {
     particle1, light1;
 
   var FAR = 300;
-
+  var light1_z = 11;
   var clock = new THREE.Clock();
+
+  var comm = new Comm();
 
   init();
   animate();
 
   function init() {
+
+    comm.listen();
 
     var container = document.getElementById('container');
 
@@ -107,10 +111,10 @@ var World = function() {
 
     var intensity = 0;
     var distance = 200;
-    var c1 = 0xff11ff;
+    var c1 = 0xff00ff;
 
     light1 = new THREE.PointLight(c1, intensity, distance);
-    light1.position.z = 11;
+    light1.position.z = light1_z;
     console.log(light1.position.z);
     scene.add(light1);
 
@@ -151,21 +155,31 @@ var World = function() {
     //
 
     window.addEventListener('resize', onWindowResize, false);
+    $(container).on('mousedown', function(event){
+      comm.clicked(event);
+    });
 
+  }
+
+  function move_light(position) {
+    var vector = new THREE.Vector3(
+    (position.x / window.innerWidth) * 2 - 1, -(position.y / window.innerHeight) * 2 + 1,
+      0.5);
+    projector.unprojectVector(vector, camera);
+    var dir = vector.sub(camera.position).normalize();
+    var ray = new THREE.Raycaster(camera.position, dir);
+    var distance = -camera.position.z / dir.z;
+    var pos = camera.position.clone().add(dir.multiplyScalar(distance));
+    light1.position.x = pos.x;
   }
 
   function onWindowResize() {
-
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-
     renderer.setSize(window.innerWidth, window.innerHeight);
-
     controls.handleResize();
-
   }
 
-  //
 
   function animate() {
 
@@ -177,10 +191,13 @@ var World = function() {
   }
 
   function render() {
-    controls.update( clock.getDelta() );
+    //controls.update(clock.getDelta());
     renderer.render(scene, camera);
-    light1.intensity +=.01;
+    light1.intensity += .01;
 
   }
+
+  this.move_light = move_light;
+  return this;
 
 }
