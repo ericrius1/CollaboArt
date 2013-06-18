@@ -81,8 +81,11 @@ var World = function() {
     // LIGHTS
 
     scene.add(new THREE.AmbientLight(0x111111));
-
-    lights.push(new Light());
+    var light = new Light();
+    debugger;
+    var light1 = new THREE.PointLight(light.color, light.intensity, light.distance);
+    comm.addLight(light);
+    lights.push(light1);
     scene.add(lights[0]);
 
 

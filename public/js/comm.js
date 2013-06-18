@@ -14,3 +14,9 @@ Comm.prototype.listen = function(){
     y: event.clientY
   });
  }
+
+ Comm.prototype.addLight = function(light){
+  this.socket.emit('add_light',{
+    light: light
+  });
+ }
