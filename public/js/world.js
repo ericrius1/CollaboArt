@@ -1,16 +1,15 @@
 var World = function() {
-
-
   var camera, scene, renderer, controls, projector;
 
   var FAR = 300;
   var clock = new THREE.Clock();
   var lights = [];
+  var numPlayers = 3;
 
   var comm = new Comm();
 
   function init() {
-
+    World.id++;
     comm.listen();
 
     var container = document.getElementById('container');
@@ -77,18 +76,14 @@ var World = function() {
     mesh.position.y = -5;
     mesh.rotation.x = -Math.PI / 2;
     scene.add(mesh);
+    groundMaterial.needsUpdate = true;
 
     // LIGHTS
+    add_lights();
 
-    scene.add(new THREE.AmbientLight(0x111111));
-    var light = new Light();
-    comm.addLight(light);
-    lights.push(new THREE.PointLight(light.color, light.intensity, light.distance));
-    scene.add(lights[0]);
 
 
     var sphere = new THREE.SphereGeometry(0.25, 16, 8);
-
 
     // RENDERER
 
@@ -146,14 +141,16 @@ var World = function() {
     renderer.render(scene, camera);
   }
 
-  function add_lights(lights) {
-    debugger;
-    var light = new Light();
-    comm.addLight(light);
-    lights.push(new THREE.PointLight(light.color, light.intensity, light.distance));
-    scene.add(lights[0]);
-
-
+  function add_lights() {
+    for (var i = 0; i < numPlayers; i++) {
+      scene.add(new THREE.AmbientLight(0x111111));
+      var light = new Light();
+      comm.addLight(light);
+      var test_light = new THREE.PointLight(light.color, light.intensity, light.distance);
+      lights.push(test_light);
+      test_light.position.x = -30 + Math.random() * 60;
+      scene.add(lights[i]);
+    }
 
   }
 
@@ -161,6 +158,7 @@ var World = function() {
   this.add_lights = add_lights;
   this.init = init;
   this.animate = animate;
+  this.renderer = renderer;
   this.add
   this.scene = scene;
   return this;
