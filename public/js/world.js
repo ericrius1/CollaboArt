@@ -83,7 +83,6 @@ var World = function() {
         var intensity = 2.5;
         var distance = 100;
         var c1 = 0xff0040, c2 = 0x0040ff, c3 = 0x80ff80, c4 = 0xffaa00, c5 = 0x00ffaa, c6 = 0xff1100;
-        //var c1 = 0xffffff, c2 = 0xffffff, c3 = 0xffffff, c4 = 0xffffff, c5 = 0xffffff, c6 = 0xffffff;
 
         light1 = new THREE.PointLight( c1, intensity, distance );
         scene.add( light1 );
@@ -91,17 +90,7 @@ var World = function() {
         light2 = new THREE.PointLight( c2, intensity, distance );
         scene.add( light2 );
 
-        light3 = new THREE.PointLight( c3, intensity, distance );
-        scene.add( light3 );
-
-        light4 = new THREE.PointLight( c4, intensity, distance );
-        scene.add( light4 );
-
-        light5 = new THREE.PointLight( c5, intensity, distance );
-        scene.add( light5 );
-
-        light6 = new THREE.PointLight( c6, intensity, distance );
-        scene.add( light6 );
+        
 
         var dlight = new THREE.DirectionalLight( 0xffffff, 0.1 );
         dlight.position.set( 0.5, -1, 0 ).normalize();
@@ -116,7 +105,7 @@ var World = function() {
       
         // RENDERER
 
-        renderer = new THREE.WebGLRenderer( { antialias: false, clearColor: 0x030303, clearAlpha: 1 } );
+        renderer = new THREE.WebGLRenderer( { antialias: false} );
         renderer.setSize( window.innerWidth, window.innerHeight );
         renderer.setClearColor( scene.fog.color, 1 );
 
@@ -163,10 +152,6 @@ var World = function() {
 
         var time = Date.now() * 0.00025;
         var z = 20, d = 150;
-
-        light1.position.x = Math.sin( time * 0.7 ) * d;
-        light1.position.z = Math.cos( time * 0.3 ) * d;
-
 
         renderer.render( scene, camera );
 
