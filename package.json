@@ -1,0 +1,15 @@
+{
+  "name": "CollaboArt",
+  "subdomain": "ericrius1-CollaboArt",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "version": "0.0.0-5",
+  "dependencies": {
+    "express": "3.2.6",
+    "socket.io": "0.9.16"
+  },
+  "engines": {
+    "node": "0.8.x"
+  }
+}
