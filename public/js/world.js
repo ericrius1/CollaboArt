@@ -1,8 +1,7 @@
 var World = function() {
 
 
-  var camera, scene, renderer, controls, projector,
-    particle1, light1;
+  var camera, scene, renderer, controls, projector;
 
   var FAR = 300;
   var clock = new THREE.Clock();
@@ -83,22 +82,12 @@ var World = function() {
 
     scene.add(new THREE.AmbientLight(0x111111));
 
-    var intensity = 0;
-    var distance = 200;
-    var c1 = 0xff00ff;
-
-    light1 = new THREE.PointLight(c1, intensity, distance);
     lights.push(new Light());
-    scene.add(light1);
+    scene.add(lights[0]);
 
 
     var sphere = new THREE.SphereGeometry(0.25, 16, 8);
 
-    var l1 = new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({
-      color: c1
-    }));
-    l1.position = light1.position;
-    scene.add(l1);
 
     // RENDERER
 
@@ -135,7 +124,7 @@ var World = function() {
     var ray = new THREE.Raycaster(camera.position, dir);
     var distance = -camera.position.z / dir.z;
     var pos = camera.position.clone().add(dir.multiplyScalar(distance));
-    light1.position.x = pos.x;
+    lights[0].position.x = pos.x;
   }
 
   function onWindowResize() {
@@ -154,7 +143,6 @@ var World = function() {
   function render() {
     //controls.update(clock.getDelta());
     renderer.render(scene, camera);
-    light1.intensity += .01;
   }
 
   this.move_light = move_light;
