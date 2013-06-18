@@ -1,115 +1,104 @@
 var World = function() {
-  
- var container, stats;
-
-      var camera, scene, renderer;
-
-      var mesh, zmesh, lightMesh, geometry;
-
-      var mouseX = 0, mouseY = 0;
-
-      var windowHalfX = window.innerWidth / 2;
-      var windowHalfY = window.innerHeight / 2;
-
-      document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-
-      init();
-      animate();
 
 
-      function init() {
+  var container, stats;
 
-        container = document.createElement( 'div' );
-        document.body.appendChild( container );
+  var camera, scene, renderer;
+  var projector;
 
-        camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
-        camera.position.set( 100000, 0, 3200 );
+  var light1;
 
-        scene = new THREE.Scene();
+  var mesh, zmesh, lightMesh, geometry;
 
-        var colors = [ 0x000000, 0xff0080, 0x8000ff, 0xffffff ];
-        var geometry = new THREE.Geometry();
+  var mouseX = 0,
+    mouseY = 0;
 
-        for ( var i = 0; i < 2000; i ++ ) {
+  var clock = new THREE.Clock();
 
-          var vertex = new THREE.Vector3();
-          vertex.x = Math.random() * 4000 - 2000;
-          vertex.y = Math.random() * 4000 - 2000;
-          vertex.z = Math.random() * 4000 - 2000;
-          geometry.vertices.push( vertex );
+  var windowHalfX = window.innerWidth / 2;
+  var windowHalfY = window.innerHeight / 2;
 
-          geometry.colors.push( new THREE.Color( colors[ Math.floor( Math.random() * colors.length ) ] ) );
+  init();
+  animate();
 
-        }
 
-        var material = new THREE.ParticleBasicMaterial( { size: 1, vertexColors: THREE. VertexColors, depthTest: false, opacity: 0.5, sizeAttenuation: false, transparent: true } );
+  function init() {
 
-        var mesh = new THREE.ParticleSystem( geometry, material );
-        scene.add( mesh );
+    container = document.createElement('div');
+    document.body.appendChild(container);
 
-        renderer = new THREE.WebGLRenderer( { preserveDrawingBuffer: true } );
-        renderer.setSize( window.innerWidth, window.innerHeight );
-        renderer.sortObjects = false;
-        renderer.autoClearColor = false;
-        container.appendChild( renderer.domElement );
+    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
+    camera.position.z = 100;
 
-        stats = new Stats();
-        stats.domElement.style.position = 'absolute';
-        stats.domElement.style.top = '0px';
-        stats.domElement.style.zIndex = 100;
-        container.appendChild( stats.domElement );
+    projector = new THREE.Projector();
 
-        //
+    scene = new THREE.Scene();
 
-        window.addEventListener( 'resize', onWindowResize, false );
+    light1 = new THREE.PointLight(0xffffff, 2, 50);
+    scene.add(light1);
 
-      }
+    var sphere = new THREE.SphereGeometry(0.5, 16, 8);
+    var l1 = new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({
+      color: 0xff0040
+    }));
+    l1.position = light1.position;
+    scene.add(l1);
 
-      function onWindowResize() {
 
-        windowHalfX = window.innerWidth / 2;
-        windowHalfY = window.innerHeight / 2;
+    renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.sortObjects = false;
+    renderer.autoClearColor = false;
+    container.appendChild(renderer.domElement);
 
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
+    stats = new Stats();
+    stats.domElement.style.position = 'absolute';
+    stats.domElement.style.top = '0px';
+    stats.domElement.style.zIndex = 100;
+    container.appendChild(stats.domElement);
 
-        renderer.setSize( window.innerWidth, window.innerHeight );
+    //
 
-      }
+    window.addEventListener('resize', onWindowResize, false);
+    $(container).mousehold(move);
 
-      function onDocumentMouseMove(event) {
+  }
 
-        mouseX = ( event.clientX - windowHalfX ) * 10;
-        mouseY = ( event.clientY - windowHalfY ) * 10;
+  function move() {
+    light1.position.z +=10;
+  }
 
-      }
+  function onWindowResize() {
 
-      //
+    windowHalfX = window.innerWidth / 2;
+    windowHalfY = window.innerHeight / 2;
 
-      function animate() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
 
-        requestAnimationFrame( animate );
+    renderer.setSize(window.innerWidth, window.innerHeight);
 
-        render();
-        stats.update();
+  }
 
-      }
 
-      function render() {
+  //
 
-        camera.position.x += ( mouseX - camera.position.x ) * .05;
-        camera.position.y += ( - mouseY - camera.position.y ) * .05;
+  function animate() {
 
-        camera.lookAt( scene.position );
+    requestAnimationFrame(animate);
 
-        renderer.render( scene, camera );
 
-      }
- 
- 
+    render();
+    stats.update();
+
+  }
+
+  function render() {
+    
+
+    renderer.render(scene, camera);
+
+  }
+
+
 }
-
-
-
-
-
