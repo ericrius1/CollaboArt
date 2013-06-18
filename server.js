@@ -12,6 +12,7 @@ app.use(express.static(__dirname + '/public'));
 //app.use(express.logger());
 
 var id = 0;
+var lights = {};
 
 io.sockets.on('connection', function (socket) {
 
@@ -19,7 +20,11 @@ io.sockets.on('connection', function (socket) {
     io.sockets.emit('update', position);
   });
 
-  io.sockets.emit('turn_on', id);
+  socket.on('update_light', function(light){
+    lights[light.id] = light;
+  });
+
+  io.sockets.emit('activate_light', id);
   id++;
 
 });

@@ -3,13 +3,8 @@
  }
 
 Comm.prototype.listen = function(){
-  this.socket.on('update', function(position){
-    world.move_light(position);
-  })
-
-  this.socket.on('turn_on', function(index){
-    debugger;
-    world.turn_on(index);
+  this.socket.on('activate_light', function(id){
+    world.activate_light(id);
   });
 }
 

@@ -3,8 +3,10 @@ var World = function() {
 
   var FAR = 300;
   var clock = new THREE.Clock();
-  var lights = [];
-  var numPlayers = 3;
+  var scene_lights = [];
+  var wire_lights = [];
+  var maxPlayers = 10;
+  var lightId;
 
   var comm = new Comm();
 
@@ -105,7 +107,7 @@ var World = function() {
 
     window.addEventListener('resize', onWindowResize, false);
     $(container).on('mousedown', function(event) {
-      comm.clicked(event);
+      //comm.clicked(event);
     });
 
   }
@@ -119,7 +121,7 @@ var World = function() {
     var ray = new THREE.Raycaster(camera.position, dir);
     var distance = -camera.position.z / dir.z;
     var pos = camera.position.clone().add(dir.multiplyScalar(distance));
-    lights[0].position.x = pos.x;
+    scene_lights[lightId].position.x = pos.x;
   }
 
   function onWindowResize() {
@@ -136,28 +138,41 @@ var World = function() {
   }
 
   function render() {
-    //controls.update(clock.getDelta());
+    controls.update(clock.getDelta());
     renderer.render(scene, camera);
   }
 
   function add_lights() {
-    for (var i = 0; i < numPlayers; i++) {
+    for (var i = 0; i < maxPlayers; i++) {
       scene.add(new THREE.AmbientLight(0x111111));
-      var light = new Light();
-      var test_light = new THREE.PointLight(light.color, light.intensity, light.distance);
-      lights.push(test_light);
-      test_light.position.x = -30 + Math.random() * 60;
-      scene.add(lights[i]);
+      var wire_light = new Light(i);
+      wire_lights.push(wire_light)
+      var scene_light = new THREE.PointLight(wire_light.color, wire_light.intensity, wire_light.distance);
+      scene_lights.push(scene_light);
+      scene.add(scene_lights[i]);
     }
   }
 
-  function turn_on(index){
+  function activate_light(id){
+    lightId = lightId || id;
+    wire_lights[id].intensity +=10;
+    wire_lights[id].position.x = -10 * Math.random() * 10;
+    update_light(id);
+    
+  }
+
+
+  function update_light(id){
     debugger;
-    lights[index].intensity +=10;
+    scene_lights[id].intensity = wire_lights[id].intensity;
+    scene_lights[id].position.x = wire_lights[id].position.x;
+    socket.emit('update_light', wire_lights[id]);
+
   }
 
   this.move_light = move_light;
-  this.turn_on = turn_on;
+  this.activate_light = activate_light;
+  this.update_light = update_light;
   this.init = init;
   this.animate = animate;
   this.renderer = renderer;
