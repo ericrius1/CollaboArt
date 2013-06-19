@@ -22,26 +22,31 @@ var World = function() {
     camera.lookAt(new THREE.Vector3());
     projector = new THREE.Projector();
 
+ 
+
     // SCENE
 
     scene = new THREE.Scene();
     scene.fog = new THREE.Fog(0x040306, 10, FAR);
 
+         // LIGHTS
+    add_lights();
+
     //CONTROLS
-    controls = new THREE.TrackballControls(camera);
-    controls.target.set(0, 0, 0);
+    // controls = new THREE.TrackballControls(camera);
+    // controls.target.set(0, 0, 0);
 
-    controls.rotateSpeed = 1.0;
-    controls.zoomSpeed = 1.2;
-    controls.panSpeed = 0.8;
+    // controls.rotateSpeed = 1.0;
+    // controls.zoomSpeed = 1.2;
+    // controls.panSpeed = 0.8;
 
-    controls.noZoom = false;
-    controls.noPan = false;
+    // controls.noZoom = false;
+    // controls.noPan = false;
 
-    controls.staticMoving = false;
-    controls.dynamicDampingFactor = 0.15;
+    // controls.staticMoving = false;
+    // controls.dynamicDampingFactor = 0.15;
 
-    controls.keys = [65, 83, 68];
+    // controls.keys = [65, 83, 68];
 
     // TEXTURES
 
@@ -78,12 +83,7 @@ var World = function() {
     scene.add(mesh);
     groundMaterial.needsUpdate = true;
 
-    // LIGHTS
-    add_lights();
-
-
-
-    var sphere = new THREE.SphereGeometry(0.25, 16, 8);
+  
 
     // RENDERER
 
@@ -113,7 +113,8 @@ var World = function() {
   }
 
   function play(){
-    scene_lights[lightId].intensity+=1;
+    //scene_lights[lightId].intensity+=1;
+    scene_lights[lightId].position.y +=1;
   }
 
   function move_light(event) {
