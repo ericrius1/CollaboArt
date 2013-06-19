@@ -3,5 +3,5 @@ var Light = function(id) {
   this.distance = 200;
   this.position = new THREE.Vector3();
   this.id = id;
-  this.hue = Math.random();
+  this.color = {h: Math.random(), s: 0.8, l: 0.8}
 }

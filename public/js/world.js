@@ -115,12 +115,26 @@ var World = function() {
     $(container).mousehold(play);
 
     animate();
-    setInterval(tween, 200);
+    setInterval(tween, 400);
 
   }
 
   function tween(){
+    if(lightId ===undefined)return;
+    var hue = map(pitchDetect.getPitch(), 0, 500, 0, 1.0);
+    wire_lights[lightId].color.h = hue;
     send_update_light();
+    // new TWEEN.Tween(wire_lights[lightId].color.getHSL())
+    // .to({h: h, s: s, l: l}, 200)
+    // .easing(TWEEN.Easing.Quartic.In)
+    // .onUpdate(
+    //     function()
+    //     {
+    //         wire_lights[lightId].color.setHSL(this.h, this.s, this.l);
+    //         send_update_light();
+    //     }
+    // )
+    // .start()
   }
 
   function play(){
@@ -152,11 +166,9 @@ var World = function() {
   function animate() {
     //only begin animating when player is asigned id
     requestAnimationFrame(animate);
-    if(lightId ===undefined)return;
     render();
     stats.update();
-    var hue = map(pitchDetect.getPitch(), 0, 500, 0, 1.0);
-    wire_lights[lightId].hue = hue;
+   
 
     
   }
@@ -183,7 +195,7 @@ var World = function() {
 
   function activate_light(id) {
     lightId = lightId || id;
-    wire_lights[id].intensity = 10;
+    wire_lights[id].intensity = 5;
     wire_lights[id].position.x = -10 * Math.random() * 10;
     scene_lights[id].intensity = wire_lights[id].intensity;
     scene_lights[id].position.x = wire_lights[id].position.x;
@@ -199,7 +211,7 @@ var World = function() {
     wire_lights[light.id] = light;
     scene_lights[light.id].intensity = light.intensity;
     scene_lights[light.id].position.copy(light.position);
-    scene_lights[light.id].color.setHSL(light.hue, 0.8, 0.8);
+    scene_lights[light.id].color.setHSL(light.color.h, 0.8, 0.8);
   }
 
   //Happens when client connects
