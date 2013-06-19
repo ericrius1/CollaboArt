@@ -124,8 +124,7 @@ var World = function() {
   }
 
   function play(){
-    //scene_lights[lightId].intensity+=1;
-    scene_lights[lightId].position.y +=1;
+    scene_lights[lightId].intensity+=1;
   }
 
   function move_light(event) {
@@ -156,7 +155,6 @@ var World = function() {
     render();
     stats.update();
     var hue = map(pitchDetect.getPitch(), 0, 500, 0, 1.0);
-    console.log(pitchDetect.getPitch());
     wire_lights[lightId].hue = hue;
     send_update_light();
     
