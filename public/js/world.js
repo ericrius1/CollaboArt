@@ -258,8 +258,11 @@ var World = function() {
   }
 
   function activate_light(id) {
-    lightId = lightId || id;
-    scene_lights[id].intensity = wire_lights[id].intensity;
+    lightId = id;
+    var wire_light = wire_lights[id];
+    wire_light.baseIntensity = 5;
+    wire_light.intensity = wire_light.baseIntensity;
+    scene_lights[id].intensity = wire_light.intensity;
     send_update_light();
   }
 
