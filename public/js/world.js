@@ -81,11 +81,11 @@ var World = function() {
       map: texture
     });
     var objectMaterial = new THREE.MeshPhongMaterial({
-      color: 0x000000,
-      ambient: 0x111111,
+      ambient: 0x555555,
+      color: 0x555555,
       specular: 0xffffff,
-      metal: true,
-      map: texture2
+      shininess: 50,
+      shading: THREE.SmoothShading
     });
 
     // GROUND
@@ -231,12 +231,7 @@ var World = function() {
     return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
   }
 
-  function render() {
-    //controls.update(clock.getDelta())
 
-    TWEEN.update();
-    renderer.render(scene, camera);
-  }
 
   function add_lights() {
     for (var i = 0; i < maxPlayers; i++) {
@@ -294,6 +289,14 @@ var World = function() {
         scene_lights[id].position.copy(light.position);
       }
     }
+  }
+
+  function render() {
+    //controls.update(clock.getDelta())
+    var time = Date.now() * 0.0005;
+
+    TWEEN.update();
+    renderer.render(scene, camera);
   }
 
   this.move_light = move_light;
