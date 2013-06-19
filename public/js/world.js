@@ -12,7 +12,7 @@ var World = function() {
   var previousNote = 0;
   var noteDiffThreshold = 1;
   var resetTime = -1;
-  var resetTimeThreshold = 1;
+  var resetTimeThreshold = 5;
   var tweenOpen = true;
   var me;
 
@@ -43,20 +43,20 @@ var World = function() {
     add_lights();
 
     //CONTROLS
-    // controls = new THREE.TrackballControls(camera);
-    // controls.target.set(0, 0, 0);
+    controls = new THREE.TrackballControls(camera);
+    controls.target.set(0, 0, 0);
 
-    // controls.rotateSpeed = 1.0;
-    // controls.zoomSpeed = 1.2;
-    // controls.panSpeed = 0.8;
+    controls.rotateSpeed = 1.0;
+    controls.zoomSpeed = 1.2;
+    controls.panSpeed = 0.8;
 
-    // controls.noZoom = false;
-    // controls.noPan = false;
+    controls.noZoom = false;
+    controls.noPan = false;
 
-    // controls.staticMoving = false;
-    // controls.dynamicDampingFactor = 0.15;
+    controls.staticMoving = false;
+    controls.dynamicDampingFactor = 0.15;
 
-    // controls.keys = [65, 83, 68];
+    controls.keys = [65, 83, 68];
 
     // TEXTURES
 
@@ -170,7 +170,7 @@ var World = function() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    //controls.handleResize();
+    controls.handleResize();
   }
 
   function animate() {
@@ -194,7 +194,7 @@ var World = function() {
       previousNote = note;
       // only increase ontensity if it hasn't been increased yet
       var intensity = Math.abs(wire_lights[lightId].intensity - wire_lights[lightId].baseIntensity) > 5 ? 
-        wire_lights[lightId].intensity : wire_lights[lightId].intensity + 10;
+        wire_lights[lightId].intensity : wire_lights[lightId].intensity + 5;
       var hue = map(pitchDetect.getNote(), 50, 100, 0, 1.0);
       tween(hue, intensity, 500);
     }
