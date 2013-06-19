@@ -244,6 +244,7 @@ var World = function() {
       var wire_light = new Light(i);
       wire_lights.push(wire_light)
       var scene_light = new THREE.PointLight(wire_light.color, wire_light.intensity, wire_light.distance);
+      scene_light.position.copy(wire_light.position);
       scene_lights.push(scene_light);
       scene.add(scene_lights[i]);
 
@@ -258,11 +259,7 @@ var World = function() {
 
   function activate_light(id) {
     lightId = lightId || id;
-    wire_lights[id].baseIntensity = 5;
-    wire_lights[id].intensity = wire_lights[id].baseIntensity;
-    wire_lights[id].position.x = -10 * Math.random() * 10;
     scene_lights[id].intensity = wire_lights[id].intensity;
-    scene_lights[id].position.x = wire_lights[id].position.x;
     send_update_light();
   }
 
