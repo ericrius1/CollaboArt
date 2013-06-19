@@ -16,16 +16,13 @@ var lights = {};
 
 io.sockets.on('connection', function (socket) {
 
-  socket.on('clicked', function(position){
-    io.sockets.emit('update', position);
-  });
 
   socket.on('update_light', function(light){
     lights[light.id] = light;
-    io.sockets.emit('update_light', lights[light.id]);
+    socket.broadcast.emit('update_light', lights[light.id]);
   });
 
-  io.sockets.emit('activate_light', id);
+  socket.emit('activate_light', id);
   io.sockets.emit('update_lights', lights);
   id++;
 

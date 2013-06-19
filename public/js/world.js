@@ -175,7 +175,7 @@ var World = function() {
     var distance = -camera.position.z / dir.z;
     var pos = camera.position.clone().add(dir.multiplyScalar(distance));
     wire_lights[lightId].position.x = pos.x;
-    send_update_light(lightId);
+    send_update_light();
   }
 
   function onWindowResize() {
@@ -227,8 +227,6 @@ var World = function() {
 
   }
 
-
-
   function map(value, istart, istop, ostart, ostop) {
     return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
   }
@@ -249,7 +247,7 @@ var World = function() {
       scene_lights.push(scene_light);
       scene.add(scene_lights[i]);
 
-      var sphere = new THREE.SphereGeometry(.25, 16, 8);
+      var sphere = new THREE.SphereGeometry(1.25, 16, 8);
       var l1 = new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({
         color: 0xff00ff
       }));
@@ -269,7 +267,12 @@ var World = function() {
   }
 
   function send_update_light() {
-    comm.update_light(wire_lights[lightId]);
+    var light = wire_lights[lightId];
+    scene_lights[light.id].intensity = light.intensity;
+    scene_lights[light.id].position.copy(light.position);
+    scene_lights[light.id].color.setHSL(light.hue, 0.8, 0.8);
+    comm.update_light(light);
+
   }
 
   function recieve_update_light(light) {
@@ -288,6 +291,7 @@ var World = function() {
         wire_lights[id] = light;
         scene_lights[id].color.setHSL(light.hue, 0.8, 0.8);
         scene_lights[id].intensity = light.intensity;
+        scene_lights[id].position.copy(light.position);
       }
     }
   }
