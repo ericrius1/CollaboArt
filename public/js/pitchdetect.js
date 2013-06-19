@@ -248,7 +248,6 @@ var PitchDetect = function() {
   function getNote(){
     //only return the note if we have confidence greater than specified threshold
     if(num_cycles === 0){
-      console.log("0 cycles");
       return -2;
     }
     return confidence > confidenceThreshold ? note: -1

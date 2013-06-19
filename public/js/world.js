@@ -120,16 +120,16 @@ var World = function() {
     animate();
   }
 
-  function tween(){
+  function tween(intensity, tweenTime){
     var hue = map(pitchDetect.getNote(), 50, 100, 0, 1.0);
-    console.log(hue);
-    new TWEEN.Tween(wire_lights[lightId].color)
-    .to({h: hue}, 500)
+    new TWEEN.Tween(wire_lights[lightId])
+    .to({hue: hue, intensity: intensity}, tweenTime)
     .easing(TWEEN.Easing.Linear.None)
     .onUpdate(
         function()
         {
-            wire_lights[lightId].color.h = this.h;
+            wire_lights[lightId].hue = this.hue;
+            wire_lights[lightId].intensity = this.intensity;
             send_update_light();
         }
     )
@@ -173,18 +173,22 @@ var World = function() {
 
   function handleAudioInput(){
     var note = pitchDetect.getNote();
-    if(note===-1){
+    if(note===-1)return;
+    if(note === -2){
       resetLight();
       return;
     }
     if(Math.abs(note - previousNote) > noteDiffThreshold){
       previousNote = note;
-      tween();
+      tween(wire_lights[lightId].intensity+100, 500);
     }
   }
 
   function resetLight(){
-    
+    wire_lights[lightId].intensity =  wire_lights[lightId].baseIntensity;
+    console.log("reset");
+    tween(wire_lights[lightId].intensity, 2000);
+
   }
 
   function map(value, istart, istop, ostart, ostop) {
@@ -210,12 +214,12 @@ var World = function() {
 
   function activate_light(id) {
     lightId = lightId || id;
-    wire_lights[id].intensity = 5;
+    wire_lights[id].baseIntensity = 5;
+    wire_lights[id].intensity = wire_lights[id].baseIntensity;
     wire_lights[id].position.x = -10 * Math.random() * 10;
     scene_lights[id].intensity = wire_lights[id].intensity;
     scene_lights[id].position.x = wire_lights[id].position.x;
     send_update_light();
-
   }
 
   function send_update_light() {
@@ -226,7 +230,7 @@ var World = function() {
     wire_lights[light.id] = light;
     scene_lights[light.id].intensity = light.intensity;
     scene_lights[light.id].position.copy(light.position);
-    scene_lights[light.id].color.setHSL(light.color.h, 0.8, 0.8);
+    scene_lights[light.id].color.setHSL(light.hue, 0.8, 0.8);
   }
 
   //Happens when client connects
@@ -236,6 +240,7 @@ var World = function() {
         var light = lights[id];
         wire_lights[id] = light;
         scene_lights[id].color.setHSL(light.hue, 0.8, 0.8);
+        scene_lights[id].intensity = light.intensity;
       }
     }
   }
