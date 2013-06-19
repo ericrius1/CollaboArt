@@ -7,11 +7,14 @@ var World = function() {
   var wire_lights = [];
   var maxPlayers = 10;
   var lightId;
+  var pitchDetect;
 
   var comm = new Comm();
 
   function init() {
     comm.listen();
+    pitchDetect = new PitchDetect();
+    pitchDetect.init();
 
     var container = document.getElementById('container');
 
@@ -129,13 +132,14 @@ var World = function() {
     var pos = camera.position.clone().add(dir.multiplyScalar(distance));
     wire_lights[lightId].position.x = pos.x;
     send_update_light(lightId);
+    console.log(pitchDetect.getPitch());
   }
 
   function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    controls.handleResize();
+    //controls.handleResize();
   }
 
   function animate() {
