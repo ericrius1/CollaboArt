@@ -6,6 +6,9 @@ var PitchDetect = function() {
   var theBuffer = null;
   var pitch = -1;
   var note = -1;
+  var num_cycles = -1;
+  var confidenceThreshold = 80;
+
   var confidence = -1;
 
   var detectorElem,
@@ -176,7 +179,7 @@ var PitchDetect = function() {
       }
 
       // 1?: average the array
-      var num_cycles = cycles.length;
+      num_cycles = cycles.length;
       var sum = 0;
       pitch = 0;
 
@@ -204,7 +207,7 @@ var PitchDetect = function() {
 
       // possible other approach to confidence: sort the array, take the median; go through the array and compute the average deviation
 
-      detectorElem.className = (confidence > 70) ? "confident" : "vague";
+      detectorElem.className = (confidence > confidenceThreshold) ? "confident" : "vague";
       // TODO: Paint confidence meter on canvasElem here.
 
       if (num_cycles == 0) {
@@ -212,10 +215,11 @@ var PitchDetect = function() {
         //noteElem.innerText = "-";
         detuneElem.className = "";
         detuneAmount.innerText = "--";
+        noteElem.innerText = note;
       } else {
         pitchElem.innerText = Math.floor(pitch);
         note = noteFromPitch(pitch);
-        if(confidence > 70){
+        if(confidence > confidenceThreshold){
            noteElem.innerText = note;
         }
        
@@ -242,16 +246,18 @@ var PitchDetect = function() {
   }
 
   function getNote(){
-    return note;
+    //only return the note if we have confidence greater than specified threshold
+    if(num_cycles === 0){
+      console.log("0 cycles");
+      return -2;
+    }
+    return confidence > confidenceThreshold ? note: -1
   }
 
-  function getConfidence(){
-    return confidence;
-  }
+ 
 
   this.init = init;
   this.getPitch = getPitch;
   this.getNote = getNote;
-  this.getConfidence = getConfidence;
   return this;
 }

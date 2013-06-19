@@ -10,6 +10,7 @@ var World = function() {
   var pitchDetect;
   var note = -1;
   var previousNote = 0;
+  var noteDiffThreshold = 1;
   var me;
 
   var comm = new Comm();
@@ -120,7 +121,8 @@ var World = function() {
   }
 
   function tween(){
-    var hue = map(pitchDetect.getNote(), 30, 100, 0, 1.0);
+    var hue = map(pitchDetect.getNote(), 50, 100, 0, 1.0);
+    console.log(hue);
     new TWEEN.Tween(wire_lights[lightId].color)
     .to({h: hue}, 500)
     .easing(TWEEN.Easing.Linear.None)
@@ -171,12 +173,18 @@ var World = function() {
 
   function handleAudioInput(){
     var note = pitchDetect.getNote();
-    if(note===-1)return;
-    if(Math.abs(note - previousNote)!== 0){
-      console.log(note);
+    if(note===-1){
+      resetLight();
+      return;
+    }
+    if(Math.abs(note - previousNote) > noteDiffThreshold){
       previousNote = note;
       tween();
     }
+  }
+
+  function resetLight(){
+    
   }
 
   function map(value, istart, istop, ostart, ostop) {
