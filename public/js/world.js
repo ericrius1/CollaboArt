@@ -115,26 +115,27 @@ var World = function() {
     $(container).mousehold(play);
 
     animate();
-    setInterval(tween, 400);
+    setInterval(tween, 3000);
 
   }
 
   function tween(){
     if(lightId ===undefined)return;
     var hue = map(pitchDetect.getPitch(), 0, 500, 0, 1.0);
-    wire_lights[lightId].color.h = hue;
+    new TWEEN.Tween(wire_lights[lightId].color)
+    .to({h: hue}, 1000)
+    .easing(TWEEN.Easing.Quartic.In)
+    .onUpdate(
+        function()
+        {
+            console.log(this.h)
+            wire_lights[lightId].color.h = this.h;
+            send_update_light();
+        }
+    )
+    .start()
     send_update_light();
-    // new TWEEN.Tween(wire_lights[lightId].color.getHSL())
-    // .to({h: h, s: s, l: l}, 200)
-    // .easing(TWEEN.Easing.Quartic.In)
-    // .onUpdate(
-    //     function()
-    //     {
-    //         wire_lights[lightId].color.setHSL(this.h, this.s, this.l);
-    //         send_update_light();
-    //     }
-    // )
-    // .start()
+    
   }
 
   function play(){
@@ -178,7 +179,8 @@ var World = function() {
   }
 
   function render() {
-    //controls.update(clock.getDelta());
+    //controls.update(clock.getDelta())
+    TWEEN.update();
     renderer.render(scene, camera);
   }
 
