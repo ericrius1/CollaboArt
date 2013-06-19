@@ -120,10 +120,10 @@ var World = function() {
   }
 
   function tween(){
-    var hue = map(pitchDetect.getPitch(), 0, 500, 0, 1.0);
+    var hue = map(pitchDetect.getPitch(), 0, 15000, 0, 1.0);
     new TWEEN.Tween(wire_lights[lightId].color)
-    .to({h: hue}, 1000)
-    .easing(TWEEN.Easing.Quartic.In)
+    .to({h: hue}, 500)
+    .easing(TWEEN.Easing.Linear.None)
     .onUpdate(
         function()
         {
@@ -132,7 +132,6 @@ var World = function() {
         }
     )
     .start()
-    send_update_light();
     
   }
 
@@ -176,6 +175,7 @@ var World = function() {
     if(Math.abs(pitch - previousPitch)> pitchDiffThreshold){
       console.log(pitch);
       previousPitch = pitch;
+      tween();
     }
   }
 

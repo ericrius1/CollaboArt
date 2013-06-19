@@ -5,6 +5,8 @@ var PitchDetect = function() {
   var analyser = null;
   var theBuffer = null;
   var pitch = -1;
+  var note = -1;
+  var confidence = -1;
 
   var detectorElem,
     canvasElem,
@@ -94,34 +96,7 @@ var PitchDetect = function() {
     }
 
 
-    function togglePlayback() {
-      var now = audioContext.currentTime;
-
-      if (isPlaying) {
-        //stop playing and return
-        sourceNode.noteOff(now);
-        sourceNode = null;
-        analyser = null;
-        isPlaying = false;
-        webkitCancelAnimationFrame(rafID);
-        return "start";
-      }
-
-      sourceNode = audioContext.createBufferSource();
-      sourceNode.buffer = theBuffer;
-      sourceNode.loop = true;
-
-      analyser = audioContext.createAnalyser();
-      analyser.fftSize = 2048;
-      sourceNode.connect(analyser);
-      analyser.connect(audioContext.destination);
-      sourceNode.noteOn(now);
-      isPlaying = true;
-      isLiveInput = false;
-      updatePitch();
-
-      return "stop";
-    }
+    
 
     var rafID = null;
     var tracks = null;
@@ -165,10 +140,9 @@ var PitchDetect = function() {
       return last_zero + t;
     }
 
-    var noteStrings = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
     function noteFromPitch(frequency) {
-      var noteNum = 12 * (Math.log(frequency / 440) / Math.log(2));
+      noteNum = 12 * (Math.log(frequency / 440) / Math.log(2));
       return Math.round(noteNum) + 69;
     }
 
@@ -217,7 +191,8 @@ var PitchDetect = function() {
       }
 
       // confidence = num_cycles / num_possible_cycles = num_cycles / (audioContext.sampleRate/)
-      var confidence = (num_cycles ? ((num_cycles / (pitch * buflen / audioContext.sampleRate)) * 100) : 0);
+      //from 1 to 100
+      confidence = (num_cycles ? ((num_cycles / (pitch * buflen / audioContext.sampleRate)) * 100) : 0);
 
 
       // console.log(
@@ -229,18 +204,21 @@ var PitchDetect = function() {
 
       // possible other approach to confidence: sort the array, take the median; go through the array and compute the average deviation
 
-      detectorElem.className = (confidence > 50) ? "confident" : "vague";
+      detectorElem.className = (confidence > 70) ? "confident" : "vague";
       // TODO: Paint confidence meter on canvasElem here.
 
       if (num_cycles == 0) {
         pitchElem.innerText = "--";
-        noteElem.innerText = "-";
+        //noteElem.innerText = "-";
         detuneElem.className = "";
         detuneAmount.innerText = "--";
       } else {
         pitchElem.innerText = Math.floor(pitch);
-        var note = noteFromPitch(pitch);
-        noteElem.innerText = noteStrings[note % 12];
+        note = noteFromPitch(pitch);
+        if(confidence > 70){
+           noteElem.innerText = note;
+        }
+       
         var detune = centsOffFromPitch(pitch, note);
         if (detune == 0) {
           detuneElem.className = "";
@@ -263,7 +241,17 @@ var PitchDetect = function() {
       return pitch;
   }
 
+  function getNote(){
+    return note;
+  }
+
+  function getConfidence(){
+    return confidence;
+  }
+
   this.init = init;
   this.getPitch = getPitch;
+  this.getNote = getNote;
+  this.getConfidence = getConfidence;
   return this;
 }
