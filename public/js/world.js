@@ -8,6 +8,8 @@ var World = function() {
   var maxPlayers = 10;
   var lightId;
   var pitchDetect;
+  var previousPitch = 0;
+  var pitchDiffThreshold = 500; 
   var me;
 
   var comm = new Comm();
@@ -115,12 +117,9 @@ var World = function() {
     $(container).mousehold(play);
 
     animate();
-    setInterval(tween, 3000);
-
   }
 
   function tween(){
-    if(lightId ===undefined)return;
     var hue = map(pitchDetect.getPitch(), 0, 500, 0, 1.0);
     new TWEEN.Tween(wire_lights[lightId].color)
     .to({h: hue}, 1000)
@@ -128,7 +127,6 @@ var World = function() {
     .onUpdate(
         function()
         {
-            console.log(this.h)
             wire_lights[lightId].color.h = this.h;
             send_update_light();
         }
@@ -167,11 +165,18 @@ var World = function() {
   function animate() {
     //only begin animating when player is asigned id
     requestAnimationFrame(animate);
+    handleAudioInput();
     render();
     stats.update();
-   
+  }
 
-    
+  function handleAudioInput(){
+    var pitch = pitchDetect.getPitch();
+    if(pitch===-1)return;
+    if(Math.abs(pitch - previousPitch)> pitchDiffThreshold){
+      console.log(pitch);
+      previousPitch = pitch;
+    }
   }
 
   function map(value, istart, istop, ostart, ostop) {
