@@ -153,7 +153,8 @@ var World = function() {
     stats.update();
     var hue = map(pitchDetect.getPitch(), 0, 500, 0, 1.0);
     console.log(pitchDetect.getPitch());
-    scene_lights[lightId].color.setHSL(hue, .8, .8);
+    wire_lights[lightId].hue = hue;
+    send_update_light();
     
   }
 
@@ -187,14 +188,15 @@ var World = function() {
 
   }
 
-  function send_update_light(id) {
-    comm.update_light(wire_lights[id]);
+  function send_update_light() {
+    comm.update_light(wire_lights[lightId]);
   }
 
   function recieve_update_light(light) {
     wire_lights[light.id] = light;
     scene_lights[light.id].intensity = light.intensity;
     scene_lights[light.id].position.copy(light.position);
+    scene_lights[light.id].color.setHSL(light.hue, 0.8, 0.8);
   }
 
   //Happens when client connects
@@ -203,8 +205,7 @@ var World = function() {
       if (lights.hasOwnProperty(id)) {
         var light = lights[id];
         wire_lights[id] = light;
-        scene_lights[id].intensity = light.intensity;
-        scene_lights[id].color = light.color;
+        scene_lights[id].color.setHSL(light.hue, 0.8, 0.8);
       }
     }
   }
