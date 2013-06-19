@@ -6,6 +6,7 @@
   <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="lib/TrackballControls.js"></script>
+  <script src="js/pitchdetect.js"></script>
   <script src="lib/stats.min.js"></script>
   <script src="js/light.js"></script>
   <script src="lib/utils.js"></script>
@@ -25,9 +26,22 @@
   #stats #fps { background: transparent !important }
   #stats #fps #fpsText { color: #aaa !important }
   #stats #fps #fpsGraph { display: none }
+  #note { font-size: 164px; }
+  .droptarget { background-color: #348781}
+  div.confident { color: black; }
+  div.vague { color: lightgrey; }
+  #note { display: inline-block; width: 1em; text-align: left;}
+
+  #detector { width: 300px; height: 300px; border: 4px solid gray; border-radius: 8px; text-align: center;}
+  #output { position: absolute; width: 300px; height: 300px; }
+  #flat { display: none; }
+  #sharp { display: none; }
+  .flat #flat { display: inline; }
+  .sharp #sharp { display: inline; }
 </style>
 
 <body>
+  
   <div id = 'container'></div>
 </body>
 
