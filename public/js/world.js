@@ -155,7 +155,6 @@ var World = function() {
       .onUpdate(function() {
       wire_lights[lightId].hue = this.hue;
       wire_lights[lightId].intensity = this.intensity;
-      send_update_light();
     })
       .start()
   }
@@ -175,7 +174,6 @@ var World = function() {
     var distance = -camera.position.z / dir.z;
     var pos = camera.position.clone().add(dir.multiplyScalar(distance));
     wire_lights[lightId].position.x = pos.x;
-    send_update_light();
   }
 
   function onWindowResize() {
@@ -248,7 +246,7 @@ var World = function() {
         color: 0xff00ff
       }));
       l1.position = scene_light.position;
-      scene.add(l1);
+      //scene.add(l1);
     }
   }
 
@@ -271,6 +269,7 @@ var World = function() {
   }
 
   function recieve_update_light(light) {
+    console.log("update")
     wire_lights[light.id] = light;
     scene_lights[light.id].intensity = light.intensity;
     scene_lights[light.id].position.copy(light.position);
@@ -293,8 +292,13 @@ var World = function() {
 
   function render() {
     //controls.update(clock.getDelta())
+    if(lightId===undefined)return;
     var time = Date.now() * 0.0005;
-
+    var numLights = scene_lights.length
+    for(var i = 0; i < numLights; i++){
+      
+      scene_lights[i].position.x = wire_lights[i].position.x + (Math.sin( time * 0.7 ) * (30));
+    }
     TWEEN.update();
     renderer.render(scene, camera);
   }
