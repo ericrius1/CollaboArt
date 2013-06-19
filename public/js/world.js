@@ -185,8 +185,12 @@ var World = function() {
     }
     if (Math.abs(note - previousNote) > noteDiffThreshold) {
       previousNote = note;
-      tween(wire_lights[lightId].intensity + 100, 500);
+      // only increase ontensity if it hasn't been increased yet
+      var intensity = Math.abs(wire_lights[lightId].intensity - wire_lights[lightId].baseIntensity) > 5 ? 
+        wire_lights[lightId].intensity : wire_lights[lightId].intensity + 10;
+      tween(intensity, 500);
     }
+    resetTime = -1;
   }
 
   function resetLight() {
@@ -195,11 +199,9 @@ var World = function() {
     } else {
       var delta = clock.getDelta();
       resetTime += delta;
-      console.log(resetTime)
       if (resetTime > resetTimeThreshold) {
-        wire_lights[lightId].intensity = wire_lights[lightId].baseIntensity;
-        console.log("reset");
-        tween(wire_lights[lightId].intensity, 2000);
+        console.log('reset');
+        tween(wire_lights[lightId].baseIntensity, 2000);
         resetTime = -1;
       }
 
