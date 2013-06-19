@@ -155,6 +155,7 @@ var World = function() {
       .onUpdate(function() {
       wire_lights[lightId].hue = this.hue;
       wire_lights[lightId].intensity = this.intensity;
+      send_update_light();
     })
       .start()
   }
@@ -262,7 +263,6 @@ var World = function() {
   function send_update_light() {
     var light = wire_lights[lightId];
     scene_lights[light.id].intensity = light.intensity;
-    scene_lights[light.id].position.copy(light.position);
     scene_lights[light.id].color.setHSL(light.hue, 0.8, 0.8);
     comm.update_light(light);
 
