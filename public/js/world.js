@@ -11,6 +11,8 @@ var World = function() {
   var note = -1;
   var previousNote = 0;
   var noteDiffThreshold = 1;
+  var resetTime = -1;
+  var resetTimeThreshold = 3;
   var me;
 
   var comm = new Comm();
@@ -29,14 +31,14 @@ var World = function() {
     camera.lookAt(new THREE.Vector3());
     projector = new THREE.Projector();
 
- 
+
 
     // SCENE
 
     scene = new THREE.Scene();
     scene.fog = new THREE.Fog(0x040306, 10, FAR);
 
-         // LIGHTS
+    // LIGHTS
     add_lights();
 
     //CONTROLS
@@ -90,7 +92,7 @@ var World = function() {
     scene.add(mesh);
     groundMaterial.needsUpdate = true;
 
-  
+
 
     // RENDERER
 
@@ -120,30 +122,33 @@ var World = function() {
     animate();
   }
 
-  function tween(intensity, tweenTime){
+  function tween(intensity, tweenTime) {
     var hue = map(pitchDetect.getNote(), 50, 100, 0, 1.0);
     new TWEEN.Tween(wire_lights[lightId])
-    .to({hue: hue, intensity: intensity}, tweenTime)
-    .easing(TWEEN.Easing.Linear.None)
-    .onUpdate(
-        function()
-        {
-            wire_lights[lightId].hue = this.hue;
-            wire_lights[lightId].intensity = this.intensity;
-            send_update_light();
-        }
-    )
-    .start()
-    
+      .to({
+      hue: hue,
+      intensity: intensity
+    }, tweenTime)
+      .easing(TWEEN.Easing.Linear.None)
+      .onUpdate(function() {
+      wire_lights[lightId].hue = this.hue;
+      wire_lights[lightId].intensity = this.intensity;
+      send_update_light();
+    })
+      .start()
+
   }
 
-  function play(){
-    wire_lights[lightId].intensity+=1;
+  function play() {
+    wire_lights[lightId].intensity += 1;
     send_update_light();
   }
 
   function move_light(event) {
-    var position= {x: event.clientX, y : event.clientY };
+    var position = {
+      x: event.clientX,
+      y: event.clientY
+    };
     var vector = new THREE.Vector3(
     (position.x / window.innerWidth) * 2 - 1, -(position.y / window.innerHeight) * 2 + 1,
       0.5);
@@ -171,24 +176,34 @@ var World = function() {
     stats.update();
   }
 
-  function handleAudioInput(){
+  function handleAudioInput() {
     var note = pitchDetect.getNote();
-    if(note===-1)return;
-    if(note === -2){
+    if (note === -1) return;
+    if (note === -2) {
       resetLight();
       return;
     }
-    if(Math.abs(note - previousNote) > noteDiffThreshold){
+    if (Math.abs(note - previousNote) > noteDiffThreshold) {
       previousNote = note;
-      tween(wire_lights[lightId].intensity+100, 500);
+      tween(wire_lights[lightId].intensity + 100, 500);
     }
   }
 
-  function resetLight(){
-    wire_lights[lightId].intensity =  wire_lights[lightId].baseIntensity;
-    console.log("reset");
-    tween(wire_lights[lightId].intensity, 2000);
+  function resetLight() {
+    if (resetTime === -1) {
+      resetTime = 0
+    } else {
+      var delta = clock.getDelta();
+      resetTime += delta;
+      console.log(resetTime)
+      if (resetTime > resetTimeThreshold) {
+        wire_lights[lightId].intensity = wire_lights[lightId].baseIntensity;
+        console.log("reset");
+        tween(wire_lights[lightId].intensity, 2000);
+        resetTime = -1;
+      }
 
+    }
   }
 
   function map(value, istart, istop, ostart, ostop) {
@@ -197,6 +212,7 @@ var World = function() {
 
   function render() {
     //controls.update(clock.getDelta())
+
     TWEEN.update();
     renderer.render(scene, camera);
   }
@@ -234,6 +250,7 @@ var World = function() {
   }
 
   //Happens when client connects
+
   function recieve_update_lights(lights) {
     for (var id in lights) {
       if (lights.hasOwnProperty(id)) {
