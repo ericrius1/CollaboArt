@@ -117,8 +117,6 @@ var World = function() {
 
     }
 
-
-
     // RENDERER
 
     renderer = new THREE.WebGLRenderer({
@@ -142,7 +140,6 @@ var World = function() {
     $(container).on('mousedown', function(event) {
       move_light(event);
     });
-    $(container).mousehold(play);
 
     animate();
   }
@@ -163,12 +160,6 @@ var World = function() {
       .start()
   }
 
-  function play() {
-    var light = scene_lights[lightId];
-    //wire_lights[lightId].intensity += .1;
-    wire_lights[lightId].position.y += 1;
-    send_update_light();
-  }
 
   function move_light(event) {
     var position = {
@@ -184,7 +175,6 @@ var World = function() {
     var distance = -camera.position.z / dir.z;
     var pos = camera.position.clone().add(dir.multiplyScalar(distance));
     wire_lights[lightId].position.x = pos.x;
-    wire_lights[lightId].position.y = pos.y;
     send_update_light(lightId);
   }
 
@@ -229,10 +219,8 @@ var World = function() {
     }
     var delta = clock.getDelta();
     resetTime += delta;
-    console.log(resetTime);
     if (resetTime > resetThreshold) {
       var light = wire_lights[lightId];
-      console.log('reset');
       resetTime = -1;
       tween(light.baseHue, light.baseIntensity, 1000);
     }
@@ -261,7 +249,7 @@ var World = function() {
       scene_lights.push(scene_light);
       scene.add(scene_lights[i]);
 
-      var sphere = new THREE.SphereGeometry(5, 16, 8);
+      var sphere = new THREE.SphereGeometry(.25, 16, 8);
       var l1 = new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({
         color: 0xff00ff
       }));
