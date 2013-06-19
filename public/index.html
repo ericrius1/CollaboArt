@@ -41,7 +41,16 @@
 </style>
 
 <body>
-  
+  <button onclick="this.innerText = togglePlayback()">use demo audio</button>
+<button onclick="toggleLiveInput()">use live input</button>
+<!--<button onclick="updatePitch(0);">sample</button>-->
+
+<div id="detector" class="vague">
+<canvas id="output"></canvas>
+<div class="pitch"><span id="pitch">--</span>Hz</div>
+<div class="note"><span id="note">--</span></div>   
+<div id="detune"><span id="detune_amt">--</span><span id="flat">cents &#9837;</span><span id="sharp">cents &#9839;</span></div>
+</div>
   <div id = 'container'></div>
 </body>
 
