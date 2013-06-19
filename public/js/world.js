@@ -115,16 +115,17 @@ var World = function() {
     $(container).mousehold(play);
 
     animate();
-    setInterval(tween_color, 2000);
+    setInterval(tween, 200);
 
   }
 
-  function tween_color(){
-    
+  function tween(){
+    send_update_light();
   }
 
   function play(){
-    scene_lights[lightId].intensity+=1;
+    wire_lights[lightId].intensity+=1;
+    send_update_light();
   }
 
   function move_light(event) {
@@ -156,7 +157,7 @@ var World = function() {
     stats.update();
     var hue = map(pitchDetect.getPitch(), 0, 500, 0, 1.0);
     wire_lights[lightId].hue = hue;
-    send_update_light();
+
     
   }
 
@@ -186,7 +187,7 @@ var World = function() {
     wire_lights[id].position.x = -10 * Math.random() * 10;
     scene_lights[id].intensity = wire_lights[id].intensity;
     scene_lights[id].position.x = wire_lights[id].position.x;
-    send_update_light(id);
+    send_update_light();
 
   }
 
