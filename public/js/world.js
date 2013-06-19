@@ -296,8 +296,8 @@ var World = function() {
     var time = Date.now() * 0.0005;
     var numLights = scene_lights.length
     for(var i = 0; i < numLights; i++){
-      
-      scene_lights[i].position.x = wire_lights[i].position.x + (Math.sin( time * 0.7 ) * (30));
+      var scene_light = scene_lights[i];
+      scene_light.position.x = wire_lights[i].position.x + (Math.sin( time * (0.7 + scene_light.id * .1) ) * (30));
     }
     TWEEN.update();
     renderer.render(scene, camera);
