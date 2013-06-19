@@ -115,7 +115,12 @@ var World = function() {
     $(container).mousehold(play);
 
     animate();
+    setInterval(tween_color, 2000);
 
+  }
+
+  function tween_color(){
+    
   }
 
   function play(){
@@ -135,7 +140,6 @@ var World = function() {
     var pos = camera.position.clone().add(dir.multiplyScalar(distance));
     wire_lights[lightId].position.x = pos.x;
     send_update_light(lightId);
-    console.log(pitchDetect.getPitch());
   }
 
   function onWindowResize() {
