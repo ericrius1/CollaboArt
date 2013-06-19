@@ -7,7 +7,7 @@ var PitchDetect = function() {
   var pitch = -1;
   var note = -1;
   var num_cycles = -1;
-  var confidenceThreshold = 50;
+  var confidenceThreshold = 70;
 
   var confidence = -1;
 

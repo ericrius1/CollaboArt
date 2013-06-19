@@ -14,7 +14,7 @@ var World = function() {
   var noteDiffThreshold = 1;
   var tweenOpen = true;
   var resetThreshold = 2;
-  var resetTime  = -1;
+  var resetTime = -1;
   var me;
 
   var comm = new Comm();
@@ -42,6 +42,8 @@ var World = function() {
 
     // LIGHTS
     add_lights();
+
+
 
     //CONTROLS
     controls = new THREE.TrackballControls(camera);
@@ -94,6 +96,27 @@ var World = function() {
     scene.add(mesh);
     groundMaterial.needsUpdate = true;
 
+    // OBJECTS
+
+    var objectGeometry = new THREE.SphereGeometry(1.5, 16, 8);
+
+    for (var i = 0; i < 1000; i++) {
+
+      var mesh = new THREE.Mesh(objectGeometry, objectMaterial);
+
+      mesh.position.x = 400 * (0.5 - Math.random());
+      mesh.position.y = 50 * (0.5 - Math.random()) + 25;
+      mesh.position.z = 200 * (0.5 - Math.random());
+
+      mesh.rotation.y = 3.14 * (0.5 - Math.random());
+      mesh.rotation.x = 3.14 * (0.5 - Math.random());
+
+      mesh.matrixAutoUpdate = false;
+      mesh.updateMatrix();
+      scene.add(mesh);
+
+    }
+
 
 
     // RENDERER
@@ -142,7 +165,8 @@ var World = function() {
 
   function play() {
     var light = scene_lights[lightId];
-    console.log(wire_lights[lightId].position.y += 1);
+    //wire_lights[lightId].intensity += .1;
+    wire_lights[lightId].position.y += 1;
     send_update_light();
   }
 
@@ -160,6 +184,7 @@ var World = function() {
     var distance = -camera.position.z / dir.z;
     var pos = camera.position.clone().add(dir.multiplyScalar(distance));
     wire_lights[lightId].position.x = pos.x;
+    wire_lights[lightId].position.y = pos.y;
     send_update_light(lightId);
   }
 
@@ -183,7 +208,7 @@ var World = function() {
 
     var note = pitchDetect.getNote();
     if (note === -1) return;
-    if(note === -2){
+    if (note === -2) {
       resetLight()
       return;
     }
@@ -197,15 +222,15 @@ var World = function() {
     }
   }
 
-  function resetLight(){
-    if(resetTime === -1){
+  function resetLight() {
+    if (resetTime === -1) {
       resetTime = 0;
       return;
-    } 
+    }
     var delta = clock.getDelta();
-    resetTime +=delta;
+    resetTime += delta;
     console.log(resetTime);
-    if(resetTime > resetThreshold){
+    if (resetTime > resetThreshold) {
       var light = wire_lights[lightId];
       console.log('reset');
       resetTime = -1;
@@ -214,7 +239,7 @@ var World = function() {
 
   }
 
- 
+
 
   function map(value, istart, istop, ostart, ostop) {
     return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
@@ -236,7 +261,7 @@ var World = function() {
       scene_lights.push(scene_light);
       scene.add(scene_lights[i]);
 
-      var sphere = new THREE.SphereGeometry(0.25, 16, 8);
+      var sphere = new THREE.SphereGeometry(5, 16, 8);
       var l1 = new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({
         color: 0xff00ff
       }));
@@ -279,14 +304,14 @@ var World = function() {
     }
   }
 
-this.move_light = move_light;
-this.activate_light = activate_light;
-this.recieve_update_light = recieve_update_light;
-this.recieve_update_lights = recieve_update_lights;
-this.send_update_light = send_update_light;
-this.init = init;
-this.renderer = renderer;
-this.scene = scene;
-me = this;
-return this;
+  this.move_light = move_light;
+  this.activate_light = activate_light;
+  this.recieve_update_light = recieve_update_light;
+  this.recieve_update_lights = recieve_update_lights;
+  this.send_update_light = send_update_light;
+  this.init = init;
+  this.renderer = renderer;
+  this.scene = scene;
+  me = this;
+  return this;
 }
