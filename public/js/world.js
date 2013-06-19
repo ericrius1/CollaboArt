@@ -8,6 +8,7 @@ var World = function() {
   var maxPlayers = 10;
   var lightId;
   var pitchDetect;
+  var me;
 
   var comm = new Comm();
 
@@ -113,6 +114,8 @@ var World = function() {
     });
     $(container).mousehold(play);
 
+    animate();
+
   }
 
   function play(){
@@ -143,9 +146,19 @@ var World = function() {
   }
 
   function animate() {
+    //only begin animating when player is asigned id
     requestAnimationFrame(animate);
+    if(lightId ===undefined)return;
     render();
     stats.update();
+    var hue = map(pitchDetect.getPitch(), 0, 500, 0, 1.0);
+    console.log(pitchDetect.getPitch());
+    scene_lights[lightId].color.setHSL(hue, .8, .8);
+    
+  }
+
+  function map(value, istart, istop, ostart, ostop) {
+    return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
   }
 
   function render() {
@@ -202,8 +215,8 @@ var World = function() {
   this.recieve_update_lights = recieve_update_lights;
   this.send_update_light = send_update_light;
   this.init = init;
-  this.animate = animate;
   this.renderer = renderer;
   this.scene = scene;
+  me = this;
   return this;
 }
