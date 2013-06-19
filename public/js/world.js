@@ -108,7 +108,12 @@ var World = function() {
     $(container).on('mousedown', function(event) {
       move_light(event);
     });
+    $(container).mousehold(play);
 
+  }
+
+  function play(){
+    scene_lights[lightId].intensity+=1;
   }
 
   function move_light(event) {
