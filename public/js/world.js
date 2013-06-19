@@ -8,12 +8,13 @@ var World = function() {
   var maxPlayers = 10;
   var lightId;
   var pitchDetect;
+  var scene, renderer;
   var note = -1;
   var previousNote = 0;
   var noteDiffThreshold = 1;
-  var resetTime = -1;
-  var resetTimeThreshold = 5;
   var tweenOpen = true;
+  var resetThreshold = 2;
+  var resetTime  = -1;
   var me;
 
   var comm = new Comm();
@@ -124,7 +125,7 @@ var World = function() {
   }
 
   function tween(hue, intensity, tweenTime) {
-  
+
     new TWEEN.Tween(wire_lights[lightId])
       .to({
       hue: hue,
@@ -135,18 +136,14 @@ var World = function() {
       wire_lights[lightId].hue = this.hue;
       wire_lights[lightId].intensity = this.intensity;
       send_update_light();
-    }).
-      onComplete(function(){
-        console.log("tween complete!")
-        tweenOpen = true;
-      })
+    })
       .start()
-
   }
 
   function play() {
-    //wire_lights[lightId].intensity += 1;
-    //send_update_light();
+    var light = scene_lights[lightId];
+    console.log(wire_lights[lightId].position.y += 1);
+    send_update_light();
   }
 
   function move_light(event) {
@@ -179,46 +176,45 @@ var World = function() {
     handleAudioInput();
     render();
     stats.update();
-    
+
   }
 
   function handleAudioInput() {
 
     var note = pitchDetect.getNote();
     if (note === -1) return;
-    if (note === -2) {
-      resetLight();
+    if(note === -2){
+      resetLight()
       return;
     }
     if (Math.abs(note - previousNote) > noteDiffThreshold) {
       previousNote = note;
-      // only increase ontensity if it hasn't been increased yet
-      var intensity = Math.abs(wire_lights[lightId].intensity - wire_lights[lightId].baseIntensity) > 5 ? 
-        wire_lights[lightId].intensity : wire_lights[lightId].intensity + 5;
+      // only increase intensity if it hasn't been increased yet
+      var intensity = Math.abs(wire_lights[lightId].intensity - wire_lights[lightId].baseIntensity) > 5 ?
+        wire_lights[lightId].intensity : wire_lights[lightId].intensity + 3;
       var hue = map(pitchDetect.getNote(), 50, 100, 0, 1.0);
       tween(hue, intensity, 500);
     }
-    resetTime = -1;
   }
 
-  function resetLight() {
-    if(!tweenOpen)return;
-    if (resetTime === -1) {
-      resetTime = 0
-    } else {
-
-      var delta = clock.getDelta();
-      resetTime += delta;
-      if (resetTime > resetTimeThreshold) {
-        console.log("reset");
-        console.log(tweenOpen);
-        tweenOpen = false;
-        tween(wire_lights[lightId].baseHue,wire_lights[lightId].baseIntensity, 2000);
-        resetTime = -1;
-      }
-
+  function resetLight(){
+    if(resetTime === -1){
+      resetTime = 0;
+      return;
+    } 
+    var delta = clock.getDelta();
+    resetTime +=delta;
+    console.log(resetTime);
+    if(resetTime > resetThreshold){
+      var light = wire_lights[lightId];
+      console.log('reset');
+      resetTime = -1;
+      tween(light.baseHue, light.baseIntensity, 1000);
     }
+
   }
+
+ 
 
   function map(value, istart, istop, ostart, ostop) {
     return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
@@ -239,6 +235,13 @@ var World = function() {
       var scene_light = new THREE.PointLight(wire_light.color, wire_light.intensity, wire_light.distance);
       scene_lights.push(scene_light);
       scene.add(scene_lights[i]);
+
+      var sphere = new THREE.SphereGeometry(0.25, 16, 8);
+      var l1 = new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({
+        color: 0xff00ff
+      }));
+      l1.position = scene_light.position;
+      scene.add(l1);
     }
   }
 
@@ -276,14 +279,14 @@ var World = function() {
     }
   }
 
-  this.move_light = move_light;
-  this.activate_light = activate_light;
-  this.recieve_update_light = recieve_update_light;
-  this.recieve_update_lights = recieve_update_lights;
-  this.send_update_light = send_update_light;
-  this.init = init;
-  this.renderer = renderer;
-  this.scene = scene;
-  me = this;
-  return this;
+this.move_light = move_light;
+this.activate_light = activate_light;
+this.recieve_update_light = recieve_update_light;
+this.recieve_update_lights = recieve_update_lights;
+this.send_update_light = send_update_light;
+this.init = init;
+this.renderer = renderer;
+this.scene = scene;
+me = this;
+return this;
 }
