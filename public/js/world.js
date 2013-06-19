@@ -12,7 +12,8 @@ var World = function() {
   var previousNote = 0;
   var noteDiffThreshold = 1;
   var resetTime = -1;
-  var resetTimeThreshold = 3;
+  var resetTimeThreshold = 1;
+  var tweenOpen = true;
   var me;
 
   var comm = new Comm();
@@ -122,8 +123,8 @@ var World = function() {
     animate();
   }
 
-  function tween(intensity, tweenTime) {
-    var hue = map(pitchDetect.getNote(), 50, 100, 0, 1.0);
+  function tween(hue, intensity, tweenTime) {
+  
     new TWEEN.Tween(wire_lights[lightId])
       .to({
       hue: hue,
@@ -134,14 +135,18 @@ var World = function() {
       wire_lights[lightId].hue = this.hue;
       wire_lights[lightId].intensity = this.intensity;
       send_update_light();
-    })
+    }).
+      onComplete(function(){
+        console.log("tween complete!")
+        tweenOpen = true;
+      })
       .start()
 
   }
 
   function play() {
-    wire_lights[lightId].intensity += 1;
-    send_update_light();
+    //wire_lights[lightId].intensity += 1;
+    //send_update_light();
   }
 
   function move_light(event) {
@@ -174,9 +179,11 @@ var World = function() {
     handleAudioInput();
     render();
     stats.update();
+    
   }
 
   function handleAudioInput() {
+
     var note = pitchDetect.getNote();
     if (note === -1) return;
     if (note === -2) {
@@ -188,20 +195,25 @@ var World = function() {
       // only increase ontensity if it hasn't been increased yet
       var intensity = Math.abs(wire_lights[lightId].intensity - wire_lights[lightId].baseIntensity) > 5 ? 
         wire_lights[lightId].intensity : wire_lights[lightId].intensity + 10;
-      tween(intensity, 500);
+      var hue = map(pitchDetect.getNote(), 50, 100, 0, 1.0);
+      tween(hue, intensity, 500);
     }
     resetTime = -1;
   }
 
   function resetLight() {
+    if(!tweenOpen)return;
     if (resetTime === -1) {
       resetTime = 0
     } else {
+
       var delta = clock.getDelta();
       resetTime += delta;
       if (resetTime > resetTimeThreshold) {
-        console.log('reset');
-        tween(wire_lights[lightId].baseIntensity, 2000);
+        console.log("reset");
+        console.log(tweenOpen);
+        tweenOpen = false;
+        tween(wire_lights[lightId].baseHue,wire_lights[lightId].baseIntensity, 2000);
         resetTime = -1;
       }
 

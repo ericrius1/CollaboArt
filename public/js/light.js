@@ -4,5 +4,6 @@ var Light = function(id) {
   this.distance = 200;
   this.position = new THREE.Vector3();
   this.id = id;
-  this.hue = Math.random();
+  this.baseHue = Math.random()
+  this.hue = this.baseHue;
 }
